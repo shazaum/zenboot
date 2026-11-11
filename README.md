@@ -7,14 +7,17 @@ Originally created and developed by Renato dos Santos.
 Licensed under the Apache License, Version 2.0.
 See the LICENSE and NOTICE files for details.
 
-# ZENBOOT (QEMU/BIOS x86)
+# ZENBOOT
 
-Projeto didatico de bootloader em duas etapas, NASM x86 16/32-bit:
+Um unico projeto, com dois alvos. O que ja foi feito e o que falta esta em `ROADMAP.md`.
+
+## PC no QEMU
+
+Bootloader didatico em duas etapas, NASM x86 16/32-bit. A saida e um disquete de BIOS.
+
 - `boot.asm`: setor de boot de 512 bytes; le 17 setores do disquete para 0x8000; instala GDT e entra em modo protegido.
 - `stage2.asm`: texto VGA, leitura de teclado PS/2 emulado, comandos `help`, `info`, `clear`; CPUID para fabricante da CPU emulada.
-- `build.sh`: compila e monta imagem de disquete de 1.44MB.
-
-## Como usar no Mac
+- `build.sh`: compila e monta a imagem `zenboot-v02.img`.
 
 ```bash
 brew install nasm qemu
@@ -22,11 +25,21 @@ brew install nasm qemu
 qemu-system-i386 -drive file=zenboot-v02.img,format=raw,if=floppy -display cocoa,zoom-to-fit=on
 ```
 
-**IMPORTANTE:** A imagem NAO serve para flash no ASUS Zenfone 2 Z00A. O dispositivo usa uma cadeia Intel/ASUS diferente.
-A pasta `z00a/` monta um `boot.img` Android separado. Essa imagem tambem nao foi validada no aparelho e nao deve ser gravada.
 Este exemplo utiliza BIOS de PC emulada no QEMU e teclado PS/2 emulado.
 
-## Limitacoes
+## Telefone ZE551ML
+
+A pasta `telefone/` monta um `boot.img` Android para o ASUS Zenfone 2. Ela usa o Droidboot do aparelho. Nao e outro bootloader e nao substitui os arquivos da raiz.
+
+```bash
+sh telefone/scripts/check-bootimg.sh
+```
+
+## Importante
+
+`zenboot-v02.img` e o `boot.img` da pasta `telefone/` sao arquivos diferentes. Nenhum dos dois deve ser gravado no aparelho nesta etapa. O `boot.img` ainda nao foi validado no hardware.
+
+## Limitacoes do PC
 
 - Setor de boot e mapa de disquete 1.44MB; stage2 maximo 8704 bytes.
 - Teclado US simplificado, sem shift ou acentos.

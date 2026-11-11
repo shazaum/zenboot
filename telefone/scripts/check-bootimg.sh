@@ -2,21 +2,21 @@
 # Confere a estrutura do boot.img. Nao inicia QEMU, fastboot, ADB nem disco fisico.
 set -eu
 root=$(cd "$(dirname "$0")/../.." && pwd)
-work=$(mktemp -d "$root/.tmp-z00a.XXXXXX")
+work=$(mktemp -d "$root/.tmp-telefone.XXXXXX")
 trap 'rm -rf "$work"' EXIT
 
 printf 'fixture-kernel' > "$work/kernel.bin"
 printf 'SIGTEST' > "$work/sig.bin"
 out="$work/boot.img"
 
-sh "$root/z00a/pack-bootimg.sh" \
+sh "$root/telefone/pack-bootimg.sh" \
   --kernel "$work/kernel.bin" \
-  --initramfs-dir "$root/z00a/initramfs" \
+  --initramfs-dir "$root/telefone/initramfs" \
   --cmdline "zenboot.init=/init" \
   --signature "$work/sig.bin" \
   --output "$out"
 
-python3 "$root/z00a/pack_bootimg.py" --check "$out"
+python3 "$root/telefone/pack_bootimg.py" --check "$out"
 
 python3 - "$out" << 'PY'
 import pathlib, sys
@@ -29,9 +29,9 @@ print("PASS: magic ANDROID! e assinatura no final")
 PY
 
 set +e
-sh "$root/z00a/pack-bootimg.sh" \
+sh "$root/telefone/pack-bootimg.sh" \
   --kernel "$work/kernel.bin" \
-  --initramfs-dir "$root/z00a/initramfs" \
+  --initramfs-dir "$root/telefone/initramfs" \
   --output /dev/null
 status=$?
 set -e
