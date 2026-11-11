@@ -137,6 +137,36 @@ def cpio_names(payload):
     return names
 
 
+def unpack_image(path, dest):
+    with open(path, "rb") as handle:
+        blob = handle.read()
+    if len(blob) < HEADER_SIZE or blob[:8] != BOOT_MAGIC:
+        raise SystemExit("imagem sem magic ANDROID!")
+    fields = struct.unpack("<8s10I", blob[:8 + 40])
+    kernel_size = fields[1]
+    ramdisk_size = fields[3]
+    pagesize = fields[8]
+    if pagesize not in PAGE_CHOICES:
+        raise SystemExit("page size invalido na imagem")
+    kernel_at = pagesize
+    ramdisk_at = pagesize + pad_len(kernel_size, pagesize)
+    kernel = blob[kernel_at:kernel_at + kernel_size]
+    ramdisk = blob[ramdisk_at:ramdisk_at + ramdisk_size]
+    if len(kernel) != kernel_size or len(ramdisk) != ramdisk_size:
+        raise SystemExit("imagem truncada")
+    os.makedirs(dest, exist_ok=True)
+    kernel_path = os.path.join(dest, "kernel")
+    ramdisk_path = os.path.join(dest, "ramdisk.cpio.gz")
+    refuse_output(kernel_path)
+    refuse_output(ramdisk_path)
+    with open(kernel_path, "wb") as handle:
+        handle.write(kernel)
+    with open(ramdisk_path, "wb") as handle:
+        handle.write(ramdisk)
+    print(f"kernel: {len(kernel)} bytes em {kernel_path}")
+    print(f"ramdisk: {len(ramdisk)} bytes em {ramdisk_path}")
+
+
 def inspect_image(path):
     with open(path, "rb") as handle:
         header = handle.read(HEADER_SIZE)
@@ -178,6 +208,8 @@ def read_file(path):
 def parse_args(argv):
     parser = argparse.ArgumentParser(description="Empacota um boot.img Android legado")
     parser.add_argument("--check", metavar="BOOTIMG", help="confere uma imagem ja gerada")
+    parser.add_argument("--unpack", metavar="BOOTIMG", help="extrai kernel e ramdisk da imagem")
+    parser.add_argument("--unpack-dir", help="diretorio de saida do --unpack")
     parser.add_argument("--kernel", help="bzImage ou arquivo usado como kernel")
     parser.add_argument("--ramdisk", help="ramdisk cpio.gz pronto")
     parser.add_argument("--initramfs-dir", help="diretorio com init e demais arquivos")
@@ -197,6 +229,11 @@ def parse_args(argv):
 
 def main(argv):
     args = parse_args(argv)
+    if args.unpack:
+        if not args.unpack_dir:
+            raise SystemExit("informe --unpack-dir")
+        unpack_image(args.unpack, args.unpack_dir)
+        return 0
     if args.check:
         inspect_image(args.check)
         return 0

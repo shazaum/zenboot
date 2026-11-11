@@ -33,7 +33,10 @@ A pasta `telefone/` monta um `boot.img` Android para o ASUS Zenfone 2. Ela usa o
 
 ```bash
 sh telefone/scripts/check-bootimg.sh
+sh telefone/scripts/boot-linux.sh
 ```
+
+O segundo comando baixa um kernel i686 e um BusyBox estatico, monta o `boot.img` e abre o shell no QEMU. O kernel e da Alpine, nao o do ZE551ML. Os binarios ficam fora do Git.
 
 ## Importante
 
