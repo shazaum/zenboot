@@ -11,7 +11,7 @@ See the LICENSE and NOTICE files for details.
 
 Projeto didatico de bootloader em duas etapas, NASM x86 16/32-bit:
 - `boot.asm`: setor de boot de 512 bytes; le 17 setores do disquete para 0x8000; instala GDT e entra em modo protegido.
-- `stage2.asm`: texto VGA, leitura de teclado PS/2 emulado, comandos `help`, `info`, `clear`; CPUID para fabricante da CPU emulada.
+- `stage2.asm`: texto VGA, leitura de teclado PS/2 emulado, comandos `help`, `info`, `clear` e `cpu`. `info` mostra o fabricante; `cpu` consulta familia, modelo, stepping, x86-64 e recursos da CPU emulada.
 - `build.sh`: compila e monta imagem de disquete de 1.44MB.
 
 ## Como usar no Mac
@@ -31,3 +31,4 @@ Este exemplo utiliza BIOS de PC emulada no QEMU e teclado PS/2 emulado.
 - Teclado US simplificado, sem shift ou acentos.
 - Nao ha interrupcoes/IDT, escalonamento, sistema de arquivos ou drivers para hardware real do Zenfone.
 - Tela limpa quando atinge o fim dos 25 linhas.
+- O comando `cpu` relata a CPU emulada. Em `qemu-system-i386`, x86-64 aparece como nao. Em `qemu-system-x86_64`, pode aparecer como sim.
