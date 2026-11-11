@@ -1,2 +1,24 @@
-*.img
+# Build outputs - fontes e scripts devem ser versionados
 *.bin
+*.img
+*.o
+*.elf
+*.map
+*.iso
+
+# Mac / IDE / arquivos temporários
+.DS_Store
+*.swp
+*.swo
+*~
+.cache/
+.tmp/
+
+# Segredos (não pertencem a este projeto)
+.env
+.env.*
+*.pem
+*.key
+id_rsa*
+secrets/
+credentials/

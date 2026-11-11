@@ -1,0 +1,22 @@
+name: ZENBOOT build and image integrity
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install NASM
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nasm
+      - name: Build image
+        run: sh build.sh
+      - name: Validate boot image
+        run: sh scripts/check.sh

@@ -1,0 +1,13 @@
+#!/bin/sh
+# Hook local opcional; ativar com git config core.hooksPath .githooks
+set -eu
+cd "$(git rev-parse --show-toplevel)"
+
+# Impede envio acidental de artefatos binários e segredos comuns.
+if git diff --cached --name-only --diff-filter=ACMR | grep -E '(^|/)(\.env($|\.)|id_rsa|secrets/|credentials/)|\.(bin|img|pem|key)$' >/dev/null 2>&1; then
+  echo 'ERRO: arquivos gerados/sensíveis no staging. Remova-os do index antes do commit.' >&2
+  exit 1
+fi
+
+sh build.sh
+sh scripts/check.sh
