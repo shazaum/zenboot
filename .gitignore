@@ -1,4 +1,5 @@
 # Build outputs - fontes e scripts devem ser versionados
+.tmp-z00a.*/
 *.bin
 *.img
 *.o

@@ -1,0 +1,17 @@
+#!/bin/sh
+# Userspace minimo. Nao inicia o Android.
+
+echo "ZENBOOT z00a: userspace Linux minimo" > /dev/kmsg 2>/dev/null || true
+
+if [ -x /bin/busybox ]; then
+    exec /bin/busybox sh
+fi
+
+if [ -x /bin/sh ]; then
+    exec /bin/sh
+fi
+
+echo "ZENBOOT z00a: shell ausente; coloque busybox estatico i686 em /bin/busybox" > /dev/kmsg 2>/dev/null || true
+while true; do
+    sleep 3600 2>/dev/null || :
+done

@@ -23,6 +23,7 @@ qemu-system-i386 -drive file=zenboot-v02.img,format=raw,if=floppy -display cocoa
 ```
 
 **IMPORTANTE:** A imagem NAO serve para flash no ASUS Zenfone 2 Z00A. O dispositivo usa uma cadeia Intel/ASUS diferente.
+A pasta `z00a/` monta um `boot.img` Android separado. Essa imagem tambem nao foi validada no aparelho e nao deve ser gravada.
 Este exemplo utiliza BIOS de PC emulada no QEMU e teclado PS/2 emulado.
 
 ## Limitacoes
